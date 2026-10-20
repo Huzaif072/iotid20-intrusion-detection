@@ -1,0 +1,84 @@
+
+# ============================================
+# IoTID20 Full-Stack ML Project
+# Python + Flask + Angular + GitHub CI/CD
+# ============================================
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+kaggle.json
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Angular / Node.js dependencies
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Original downloaded datasets
+data/raw/
+
+# Generated local data
+data/sample_inputs.csv
+
+# Trained machine learning artifacts
+backend/models/*.joblib
+backend/models/*.pkl
+backend/models/*.h5
+backend/models/*.keras
+
+# Generated sample payload
+backend/test_payload.json
+
+# Generated evaluation results
+docs/actual_metrics.json
+
+# Temporary files and backups
+*.bak
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# IDE-specific settings
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local TensorFlow / experiment outputs
+tensorboard_logs/
+runs/
+checkpoints/

@@ -1,0 +1,69 @@
+<main class="shell">
+  <header>
+    <p class="eyebrow">DEVOPS LAB · RESEARCH PROTOTYPE</p>
+    <h1>IoTID20 Intrusion Detection</h1>
+    <p>Binary network flow classification · 83 original features · Flask inference</p>
+  </header>
+
+  <div class="notice" *ngIf="deployedStatic">Static GitHub Pages demonstration. Real predictions require Flask running locally.</div>
+  <div class="notice" *ngIf="!deployedStatic && !fetched() && !error()">Loading model schema from the local Flask server…</div>
+
+  <section *ngIf="fetched()">
+    <h2>Choose an input method <span class="counter">{{ fields().length }} features</span></h2>
+    <p>No need to fill all 83 fields manually for a standard prediction.</p>
+    <nav class="mode-options" aria-label="Input method">
+      <button type="button" [class.active]="mode() === 'sample'" (click)="setMode('sample')">Load sample</button>
+      <button type="button" [class.active]="mode() === 'csv'" (click)="setMode('csv')">Upload CSV</button>
+      <button type="button" [class.active]="mode() === 'manual'" (click)="setMode('manual')">Advanced manual input</button>
+    </nav>
+
+    <div class="input-panel" *ngIf="mode() === 'sample'">
+      <h3>Saved sample record</h3>
+      <p>Fetch the exact training-time example from <code>backend/test_payload.json</code> and automatically populate every input field.</p>
+      <button type="button" (click)="loadSample()" [disabled]="busySample()">{{ busySample() ? 'Loading…' : 'Reload sample record' }}</button>
+    </div>
+
+    <div class="input-panel" *ngIf="mode() === 'csv'">
+      <h3>Import a CSV record</h3>
+      <p>CSV must contain the 83 original feature columns. Extra columns (including class labels) are ignored. The CSV stays in your browser; only the selected row is sent for prediction.</p>
+      <label class="file-label">Choose CSV (up to 8 MB)
+        <input type="file" accept=".csv,text/csv" (change)="onCsvFile($event)" />
+      </label>
+      <label *ngIf="csvRows().length" class="row-picker">Select a row from {{ csvName() }} ({{ csvRows().length }} available)
+        <select [ngModel]="selectedRow()" (ngModelChange)="selectedRow.set(+$event);loadCsvRow()" name="rowSelection">
+          <option *ngFor="let row of csvRows(); let i = index" [ngValue]="i">Row {{ i + 1 }}</option>
+        </select>
+      </label>
+      <p class="muted">For large IoTID20 CSVs, export a smaller CSV containing representative rows first. This tool loads up to 1,000 rows per file.</p>
+    </div>
+
+    <div class="input-panel" *ngIf="mode() === 'manual'">
+      <h3>Advanced manual input</h3>
+      <p>Edit the 83 original input features below. You can first load a sample and then switch here to modify its values.</p>
+      <div class="grid">
+        <label *ngFor="let field of fields()">{{ field.name }}
+          <input *ngIf="field.kind === 'number'" type="number" step="any" [name]="field.name" [(ngModel)]="values[field.name]" />
+          <select *ngIf="field.kind === 'category'" [name]="field.name" [(ngModel)]="values[field.name]">
+            <option [ngValue]="null">Select…</option>
+            <option *ngFor="let option of field.options" [ngValue]="option">{{ option }}</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <p *ngIf="info()" class="info">{{ info() }}</p>
+    <p *ngIf="error()" class="error" role="alert">{{ error() }}</p>
+
+    <button type="button" class="predict-btn" (click)="submit()" [disabled]="loading() || busySample() || deployedStatic || (mode() === 'csv' && !csvRows().length)">
+      {{ loading() ? 'Predicting…' : 'Predict network flow' }}
+    </button>
+  </section>
+
+  <p *ngIf="!fetched() && error()" class="error" role="alert">{{ error() }}</p>
+  <section *ngIf="result() as prediction" class="result" aria-live="polite">
+    <h2>Prediction: {{ prediction.prediction }}</h2>
+    <p *ngFor="let item of prediction.probabilities | keyvalue">{{ item.key }}: {{ item.value | percent:'1.1-2' }}</p>
+    <small>{{ prediction.disclaimer }}</small>
+  </section>
+  <footer>Research/teaching prototype — not a production intrusion-prevention system.</footer>
+</main>
