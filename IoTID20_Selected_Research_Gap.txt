@@ -1,0 +1,86 @@
+SELECTED RESEARCH GAP AND PROPOSED WORK
+IoTID20 Intrusion Detection Research Project
+
+TITLE
+Evaluating the Impact of Duplicate Records and Identifier-Based Features on IoTID20 Intrusion Detection Performance
+
+1. SELECTED RESEARCH GAP
+The current IoTID20 Random Forest baseline reports approximately 99.8666% accuracy on an 80/20 stratified random split of 625,783 records, using 83 original input features. However, this evaluation does not establish how much the reported performance depends on duplicate or related network flows and identifying fields such as Flow_ID, Src_IP, Dst_IP, and Timestamp.
+
+If near-identical or related flows occur in both training and test sets, or if identifier fields are strongly associated with labels in this dataset, the measured performance may overestimate generalization to new traffic, sessions, devices, or environments. These are potential sources of evaluation bias; their actual effect must be measured rather than assumed.
+
+This project will investigate this gap with controlled experiments. It does not claim that the published 2026 CNN-GRU-attention paper has never considered leakage, nor does it claim that removing identifiers necessarily improves accuracy. The original research paper and related literature must be reviewed before describing the contribution as novel.
+
+2. PROPOSED RESEARCH QUESTION
+How do duplicate/related network-flow records and identifying input features affect Random Forest classification performance on IoTID20 under conventional and leakage-aware evaluation procedures?
+
+3. OBJECTIVES
+- Audit the dataset for exact duplicate predictor rows, duplicate full records, repeated flow/session identifiers, missing values, and class distribution.
+- Establish a reproducible baseline using the existing Random Forest pipeline, seed, input schema, and current train/test procedure.
+- Quantify the effect of removing exact duplicates before the train/test split.
+- Quantify the effect of excluding identifying fields (at minimum Flow_ID, Src_IP, Dst_IP, Timestamp when present).
+- Evaluate generalization under a suitable group-aware or time-aware split if supported by reliable grouping/timestamp fields.
+- Compare accuracy with macro/weighted F1, Normal and Anomaly recall, precision, false-positive rate, and confusion matrices.
+- Document limitations, resource usage, experimental settings, and the implications for intrusion detection research.
+
+4. HYPOTHESIS
+A stratified random record-level split with duplicates and identifying fields retained may provide more optimistic results than a deduplicated, identifier-reduced, group-aware or chronological evaluation. This is a hypothesis, not a predetermined finding. Performance may increase, decrease, or remain similar.
+
+5. EXPERIMENTAL PLAN
+Experiment A — Existing baseline:
+  Use the original 83-feature pipeline and stratified 80/20 random split. Report the reproduced baseline and compare it against the recorded 99.8666% accuracy.
+
+Experiment B — Duplicate-aware evaluation:
+  Identify and remove exact duplicate rows BEFORE splitting. Report how many rows are removed per class; retrain the same pipeline and evaluate on a fresh 80/20 stratified split.
+
+Experiment C — Identifier-reduced evaluation:
+  Start with the deduplicated dataset. Remove Flow_ID, Src_IP, Dst_IP, Timestamp (confirm exact dataset column names), retrain using the same modeling pipeline and split policy, and measure differences. Clearly state the resulting feature count.
+
+Experiment D — Group-aware or chronological validation:
+  On deduplicated, identifier-reduced data, divide train and test by a suitable flow/session/device group, or in chronological order if timestamps are valid. Choose the grouping method based on a preliminary audit, prevent group overlap, keep all preprocessing fitted solely on training data, and report differences in class distribution between splits. If a meaningful split is impossible, state that limitation rather than inventing a grouping variable.
+
+For fair attribution, supplement these with a compact factorial comparison if feasible (with/without deduplication × with/without identifier features, under the same split type). Do not attribute all changes to just one factor if several factors change simultaneously.
+
+6. IMPLEMENTATION PROCEDURE
+1) Preserve the original training script, model artifact, and metrics; create separate experiment scripts/notebooks and output filenames.
+2) Record dataset source, version/file hash, size, columns, target label distribution, software versions, and random seed.
+3) Audit exact duplicates and repeated identifiers WITHOUT using test labels to engineer features or tune the model.
+4) Apply training-only imputers, encoders, scaling, and feature selection within the Scikit-learn pipeline; never fit them on the test set.
+5) Run experiments A through D with consistent Random Forest hyperparameters when possible, noting any deviations.
+6) Save per-experiment confusion matrices, classification reports, class counts, train/test row counts, run settings, and training/inference time.
+7) Repeat feasible random splits with several seeds to measure variability; avoid selecting only the best-performing seed.
+8) Summarize findings with tables and plots. Discuss whether any accuracy difference is caused by deduplication, feature removal, split choice, or multiple simultaneous changes.
+9) Review the chosen 2026 paper and related studies to accurately state what they already address and how this controlled evaluation differs.
+
+7. EVALUATION METRICS
+Primary: macro F1-score, per-class recall (especially the minority Normal class), and false-positive rate.
+Secondary: accuracy, weighted F1-score, precision, confusion matrix, prediction latency, training time, and model size.
+If possible, add uncertainty estimates across repeated splits. Do not treat model probability outputs as calibrated confidence without calibration testing.
+
+8. EXPECTED DELIVERABLES
+- Dataset quality audit with counts of exact duplicates, repeated identifiers, and class imbalance.
+- Reproducible scripts or notebook covering Experiments A, B, C, and D.
+- Comparison table showing every experiment's split strategy, retained features, row counts, accuracy, macro F1, Normal recall, Anomaly recall, and false-positive rate.
+- Confusion matrices and a short explanation of any observed performance changes.
+- Updated research-methodology/results discussion and documented threats to validity.
+- GitHub commit(s) containing code and a report but not the raw dataset, model binaries, secrets, or other ignored files.
+
+9. DEFINITION OF DONE — WHEN THE GAP HAS BEEN INVESTIGATED
+The work is complete when the duplicate/identifier audit and controlled experiments have been run; the effect on performance has been measured with an appropriate comparison and per-class metrics; any feasible group/time split has been validated for overlap; and the results, methodology, limitations, and reproducibility instructions are documented. A drop in accuracy is NOT a failure: identifying evaluation inflation is itself a valid research result.
+
+10. SCOPE AND CAUTIONS
+- This gap is about measurement validity and generalization, not implementing the CNN-GRU-attention architecture of the referenced paper.
+- IoTID20 binary classification does not independently evaluate zero-day attack detection or attack subcategory confusion.
+- If grouped evaluation changes the class distribution substantially, compare cautiously and report that difference.
+- Do not deploy or claim production intrusion-prevention effectiveness based only on benchmark accuracy.
+- The dataset's exact duplicate counts and the magnitude of potential leakage must be established empirically; no unverified counts are asserted here.
+
+EXISTING BASELINE FOR COMPARISON
+Data rows: 625,783
+Original model features: 83
+Training rows: 500,626
+Testing rows: 125,157
+Accuracy: 0.9986656759110557
+Weighted F1: 0.9986591274883636
+Macro F1: 0.9943800273499405
+Model: Scikit-learn Random Forest baseline, not a reproduction of the published CNN-GRU-attention architecture.

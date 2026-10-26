@@ -1,0 +1,38 @@
+STUDENT AND RESEARCH DETAILS
+============================
+
+Student Name : Muhammad Huzaif Amir
+Roll Number  : 232006
+Section      : BSSE-F-23-B
+
+DATASET DETAILS
+---------------
+Dataset Name : IoTID20 (IoT Intrusion Detection Dataset 2020)
+Dataset Link : https://www.kaggle.com/datasets/rohulaminlabid/iotid20-dataset
+Dataset Size : 625,783 records
+Dataset Type : IoT network traffic for intrusion detection
+
+RESEARCH PAPER DETAILS
+----------------------
+Paper Title  : Attention-Enhanced Hybrid Deep Learning for Intrusion Detection in IoT Networks
+Authors      : Umair Ali Zaki, Muhammad Usman Yaseen, Muhammad Imran, and Muhammad Kazim
+Year         : 2026
+Journal      : IET Networks
+Paper Link   : https://doi.org/10.1049/ntw2.70037
+Publisher URL: https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/ntw2.70037
+
+SELECTED RESEARCH GAP
+---------------------
+Evaluating the Impact of Duplicate Records and Identifier-Based Features on IoTID20 Intrusion Detection Performance.
+
+For the problem statement, planned experiments, evaluation criteria, and proposed work, see the accompanying file:
+IoTID20_Selected_Research_Gap.txt
+
+IMPLEMENTATION NOTE
+-------------------
+The current project uses a Random Forest baseline for binary intrusion detection.
+It does not implement or reproduce the research paper's CNN-GRU-attention architecture.
+The selected research gap is proposed work and has not yet been completed.
+
+GitHub Repository:
+https://github.com/Huzaif072/iotid20-intrusion-detection
